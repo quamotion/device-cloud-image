@@ -4,7 +4,7 @@ jobs:
     vmImage: 'ubuntu-16.04'
   steps:
   - script: |
-      sudo apt-get install -y xorriso
+      sudo apt-get install -y xorriso systemd-nspawn
     displayName: Install dependencies
 
   - script: |
@@ -12,6 +12,16 @@ jobs:
       xorriso -osirrox on -indev ubuntu-18.04.1.0-live-server-amd64.iso  -extract / upstream/
       sudo unsquashfs upstream/casper/filesystem.squashfs
     displayName: Download and extract Ubuntu installer
+
+  - script: |
+      # https://github.com/systemd/systemd/pull/9024 contains changes to bind mount resolv-conf
+      # into the chroot. Available in systemd 239 and above, so that means Ubuntu 18.10 and later.
+      sudo cp -L /etc/resolv.conf squashfs-root/etc/resolv.conf
+
+      # Copy the scripts inside the RootFS, and execute them
+      sudo cp -r scripts/ squashfs-root/root/scripts/
+      sudo systemd-nspawn -D squashfs-root/ /root/scripts/prepare-ansible.sh
+    displayName: Prepare RootFS
 
   - task: PublishBuildArtifacts@1
     inputs:
