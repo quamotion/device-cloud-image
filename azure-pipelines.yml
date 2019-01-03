@@ -24,6 +24,10 @@ jobs:
       sudo systemd-nspawn -D squashfs-root/ /root/scripts/prepare-ansible.sh
     displayName: Prepare RootFS
 
+  - script: |
+      sudo systemd-nspawn -D squashfs-root/ /root/scripts/apply-role.sh
+    displayName: Apply device-farm-node role
+
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/iso'
