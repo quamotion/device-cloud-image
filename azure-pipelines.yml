@@ -42,7 +42,7 @@ jobs:
 
   - script: |
       mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/iso
-      sudo genisoimage -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $BUILD_ARTIFACTSTAGINGDIRECTORY/quamotion-device-node.iso upstream/
+      sudo genisoimage -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $BUILD_ARTIFACTSTAGINGDIRECTORY/iso/quamotion-device-node.iso upstream/
 
   - task: PublishBuildArtifacts@1
     inputs:
