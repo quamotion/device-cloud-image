@@ -1,0 +1,21 @@
+jobs:
+- job: build
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      apt-get install -y xorriso
+    displayName: Install dependencies
+
+  - script: |
+      curl -Lo ubuntu-18.04.1.0-live-server-amd64.iso http://releases.ubuntu.com/18.04.1.0/ubuntu-18.04.1.0-live-server-amd64.iso
+      xorriso -osirrox on -indev ubuntu-18.04.1.0-live-server-amd64.iso  -extract / upstream/
+      unsquashfs upstream/casper/filesystem.squashfs
+    displayName: Download and extract Ubuntu installer
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/iso'
+      artifactName: 'iso'
+      publishLocation: 'Container'
+    displayName: Publish
