@@ -47,8 +47,10 @@ cleanup:
 	sudo rm -rf squashfs-root/root/scripts/
 
 quamotion-device-node.iso:
+	sudo touch upstream/casper/filesystem.manifest
 	sudo chmod +w upstream/casper/filesystem.manifest
 	sudo systemd-nspawn -D squashfs-root dpkg-query -W --showformat='${Package} ${Version}\n' | sudo tee upstream/casper/filesystem.manifest
+	sudo rm upstream/casper/filesystem.squashfs
 	sudo mksquashfs squashfs-root upstream/casper/filesystem.squashfs -b 1048576
 	printf $(sudo du -sx --block-size=1 edit | cut -f1) | sudo tee upstream/casper/filesystem.size
 	sudo rm -f upstream/md5sum.txt
@@ -57,6 +59,14 @@ quamotion-device-node.iso:
 	sudo genisoimage -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o quamotion-device-node.iso upstream/
 
 iso: quamotion-device-node.iso
+
+qemu-install:
+	rm -f quamotion-device-node.img
+	qemu-img create -f qcow2 quamotion-device-node.img 10G
+	sudo /usr/bin/qemu-system-x86_64 -enable-kvm -cdrom quamotion-device-node.iso -boot d -m 4096 -cpu host -smp 4 -hda quamotion-device-node.img -display sdl
+
+qemu-run:
+	sudo /usr/bin/qemu-system-x86_64 -enable-kvm -m 4096 -cpu host -smp 4 -hda quamotion-device-node.img -display sdl
 
 # Cleans everything except for the iso.
 clean:

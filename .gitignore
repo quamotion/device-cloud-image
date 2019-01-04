@@ -1,5 +1,6 @@
 *.iso
 *.swp
 *.lck
+*.img
 squashfs-root/
 upstream/
