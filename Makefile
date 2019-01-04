@@ -42,6 +42,10 @@ squashfs-root/etc/docker/daemon.json: squashfs-root/root/.ansible_galaxy
 
 apply-role: squashfs-root/etc/docker/daemon.json
 
+cleanup:
+	sudo systemd-nspawn -D squashfs-root/ /root/scripts/cleanup.sh
+	sudo rm -rf squashfs-root/root/scripts/
+
 # Cleans everything except for the iso.
 clean:
 	sudo rm -rf upstream/

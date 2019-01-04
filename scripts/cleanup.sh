@@ -14,6 +14,6 @@ rm -rf /root/.local/
 rm -rf /root/.ansible*
 
 # Reset mache ID & friends
-rm /var/lib/dbus/machine-id
-rm /sbin/initctl
+[ -e /var/lib/dbus/machine-id ] && rm /var/lib/dbus/machine-id
+[ -e /sbin/initctl ] && rm /sbin/initctl
 dpkg-divert --rename --remove /sbin/initctl
