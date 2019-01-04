@@ -23,10 +23,9 @@ squashfs-root/etc/lsb-release: upstream/casper/filesystem.squashfs
 # Shortcut for extracing the rootfs
 rootfs: squashfs-root/etc/lsb-release
 
-# Install the ansible modules, via galaxy, and fix name resolution
+# Install the ansible modules, via galaxy, and fix name resolution.
+# You must run this task with sudo privileges
 squashfs-root/root/.ansible_galaxy: squashfs-root/etc/lsb-release
-	stat squashfs-root/root/.ansible_galaxy || (echo "Please run this command as root" && exit 1)
-
 	# https://github.com/systemd/systemd/pull/9024 contains changes to bind mount resolv-conf
 	# into the chroot. Available in systemd 239 and above, so that means Ubuntu 18.10 and later.
 	sudo mv squashfs-root/etc/resolv.conf squashfs-root/etc/resolv.conf.old
