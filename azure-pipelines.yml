@@ -8,24 +8,15 @@ jobs:
     displayName: Install dependencies
 
   - script: |
-      curl -Lo ubuntu-18.04.1.0-live-server-amd64.iso http://releases.ubuntu.com/18.04.1.0/ubuntu-18.04.1.0-live-server-amd64.iso
-      xorriso -osirrox on -indev ubuntu-18.04.1.0-live-server-amd64.iso  -extract / upstream/
-      sudo unsquashfs upstream/casper/filesystem.squashfs
+      make rootfs
     displayName: Download and extract Ubuntu installer
 
   - script: |
-      # https://github.com/systemd/systemd/pull/9024 contains changes to bind mount resolv-conf
-      # into the chroot. Available in systemd 239 and above, so that means Ubuntu 18.10 and later.
-      sudo rm squashfs-root/etc/resolv.conf
-      sudo cp -L /etc/resolv.conf squashfs-root/etc/resolv.conf
-
-      # Copy the scripts inside the RootFS, and execute them
-      sudo cp -r scripts/ squashfs-root/root/scripts/
-      sudo systemd-nspawn -D squashfs-root/ /root/scripts/prepare-ansible.sh
+      sudo make prepare
     displayName: Prepare RootFS
 
   - script: |
-      sudo systemd-nspawn -D squashfs-root/ /root/scripts/apply-role.sh
+      sudo make apply-role
     displayName: Apply device-farm-node role
 
   - script: |
