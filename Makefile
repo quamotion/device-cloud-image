@@ -42,11 +42,9 @@ squashfs-root/etc/docker/daemon.json: squashfs-root/root/.ansible_galaxy
 
 apply-role: squashfs-root/etc/docker/daemon.json
 
-cleanup:
+quamotion-device-node.iso: squashfs-root/etc/docker/daemon.json
 	sudo systemd-nspawn -D squashfs-root/ /root/scripts/cleanup.sh
 	sudo rm -rf squashfs-root/root/scripts/
-
-quamotion-device-node.iso:
 	sudo touch upstream/casper/filesystem.manifest
 	sudo chmod +w upstream/casper/filesystem.manifest
 	sudo systemd-nspawn -D squashfs-root dpkg-query -W --showformat='${Package} ${Version}\n' | sudo tee upstream/casper/filesystem.manifest
@@ -72,3 +70,4 @@ qemu-run:
 clean:
 	sudo rm -rf upstream/
 	sudo rm -rf squashfs-root/
+	rm -f quamotion-device-node.iso
