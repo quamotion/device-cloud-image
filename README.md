@@ -1,4 +1,5 @@
 # Quamotion Device Farm Installation Images
+[![Build Status](https://dev.azure.com/qmfrederik/device-cloud-image/_apis/build/status/quamotion.device-cloud-image?branchName=master)](https://dev.azure.com/qmfrederik/device-cloud-image/_build/latest?definitionId=5?branchName=master)
 
 This repository creates scripts to create installation images (.iso files) which you can use to provision
 nodes for a Quamotion Device Farm.
