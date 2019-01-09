@@ -20,11 +20,6 @@ jobs:
     displayName: Apply device-farm-node role
 
   - script: |
-      sudo systemd-nspawn -D squashfs-root/ /root/scripts/cleanup.sh
-      sudo rm squashfs-root/root/scripts/
-    displayName: Cleanup
-
-  - script: |
       sudo make iso
       mkdir -p ${BUILD_ARTIFACTSTAGINGDIRECTORY}/iso/
       cp quamotion-device-node.iso ${BUILD_ARTIFACTSTAGINGDIRECTORY}/iso/
