@@ -20,8 +20,12 @@ squashfs-root/etc/lsb-release: upstream/casper/filesystem.squashfs
 	# use touch to update the timestamp.
 	sudo touch squashfs-root/etc/lsb-release
 
+installer/etc/casper.conf: upstream/casper/filesystem.squashfs
+	sudo unsquashfs -d installer/ upstream/casper/installer.squashfs
+	sudo touch installer/etc/casper.conf
+
 # Shortcut for extracing the rootfs
-rootfs: squashfs-root/etc/lsb-release
+rootfs: squashfs-root/etc/lsb-release installer/etc/resolv.conf
 
 # Install the ansible modules, via galaxy, and fix name resolution.
 # You must run this task with sudo privileges

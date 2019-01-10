@@ -3,4 +3,5 @@
 *.lck
 *.img
 squashfs-root/
+installer/
 upstream/
