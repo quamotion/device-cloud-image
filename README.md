@@ -7,6 +7,39 @@ nodes for a Quamotion Device Farm.
 This images contain a copy of Ubuntu which has been preloaded with the required components - such as Docker
 or Kubernetes.
 
+## Creating a bootable USB drive
+
+You can use [Rufus](https://rufus.ie/) or to create a bootable USB drive based on this .iso image.
+
+## Setting up the Device Cloud
+
+To set up the device cloud:
+
+1. Boot from the USB drive
+2. Follow the steps in the installation wizard
+3. Apply the quamotion_device_cloud Ansible role
+4. Deploy the quamotion-device-farm and quamotion-device-daemons Helm charts.
+
+### Applying the quamotion_device_cloud Ansible role
+
+
+```
+sudo su
+ansible-galaxy install quamotion.device_cloud_node
+
+ansible localhost -c local -m include_role -a name=quamotion.device_cloud_node -e "device_farm_role=master"
+```
+
+### Deploying the quamotion-device-daemons and quamotion-device-farm Helm charts
+
+Make sure to edit the `build-values.yaml` file, and then:
+
+```
+sudo su
+helm install -f build-values.yml quamotion-device-daemons-0.95.76-gb56051bcfa.tgz
+helm install -f build-values.yaml quamotion-device-farm-0.95.76-gb56051bcfa.tgz
+```
+
 ## Further Reading
 
 The scripts are based on Azure Pipelines, so you want to be familiar with that.
