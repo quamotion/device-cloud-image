@@ -25,7 +25,7 @@ installer/etc/casper.conf: upstream/casper/filesystem.squashfs
 	sudo touch installer/etc/casper.conf
 
 # Shortcut for extracing the rootfs
-rootfs: squashfs-root/etc/lsb-release installer/etc/resolv.conf
+rootfs: squashfs-root/etc/lsb-release installer/etc/casper.conf
 
 # Install the ansible modules, via galaxy, and fix name resolution.
 # You must run this task with sudo privileges
@@ -49,12 +49,19 @@ apply-role: squashfs-root/etc/docker/daemon.json
 quamotion-device-node.iso: squashfs-root/etc/docker/daemon.json
 	sudo systemd-nspawn -D squashfs-root/ /root/scripts/cleanup.sh
 	sudo rm -rf squashfs-root/root/scripts/
+
+	# Update the (root) filesystem
 	sudo touch upstream/casper/filesystem.manifest
 	sudo chmod +w upstream/casper/filesystem.manifest
 	sudo systemd-nspawn -D squashfs-root dpkg-query -W --showformat='${Package} ${Version}\n' | sudo tee upstream/casper/filesystem.manifest
 	sudo rm upstream/casper/filesystem.squashfs
 	sudo mksquashfs squashfs-root upstream/casper/filesystem.squashfs -b 1048576
 	printf $(sudo du -sx --block-size=1 edit | cut -f1) | sudo tee upstream/casper/filesystem.size
+
+	# Update the installer filesystem
+	sudo rm upstream/casper/installer.squashfs
+	sudo mksquashfs installer upstream/casper/installer.squashfs -b 1048576
+
 	sudo rm -f upstream/md5sum.txt
 	(cd upstream && find -type f -print0 | sudo xargs -0 md5sum | grep -v isolinux/boot.cat) | sudo tee upstream/md5sum.txt
 	mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/iso
