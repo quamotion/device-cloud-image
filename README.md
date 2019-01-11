@@ -17,17 +17,22 @@ To set up the device cloud:
 
 1. Boot from the USB drive
 2. Follow the steps in the installation wizard
-3. Apply the quamotion_device_cloud Ansible role
-4. Deploy the quamotion-device-farm and quamotion-device-daemons Helm charts.
+3. Temporary workarounds
+4. Apply the quamotion_device_cloud Ansible role
+5. Deploy the quamotion-device-farm and quamotion-device-daemons Helm charts.
+
+### Temporary workarounds
+
+1. Edit `/etc/resolv.conf` and update the nameserver
+2. Run `sudo swapoff -a`
 
 ### Applying the quamotion_device_cloud Ansible role
-
 
 ```
 sudo su
 ansible-galaxy install quamotion.device_cloud_node
 
-ansible localhost -c local -m include_role -a name=quamotion.device_cloud_node -e "device_farm_role=master"
+ansible localhost -c local -m include_role -a name=quamotion.device_cloud_node -e "device_farm_role=master ansible_distribution=Ubuntu ansible_distribution_release=bionic"
 ```
 
 ### Deploying the quamotion-device-daemons and quamotion-device-farm Helm charts
