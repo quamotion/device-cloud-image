@@ -69,7 +69,8 @@ quamotion-device-node.iso: squashfs-root/etc/docker/daemon.json
 	sudo rm -f upstream/md5sum.txt
 	(cd upstream && find -type f -print0 | sudo xargs -0 md5sum | grep -v isolinux/boot.cat) | sudo tee upstream/md5sum.txt
 	mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/iso
-	sudo genisoimage -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o quamotion-device-node.iso upstream/
+	xorisso -as mkisofs -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -D -r -V "quamotion" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o quamotion-device-node.iso upstream/
+#	sudo genisoimage                                                  -D -r -V "quamotion" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o quamotion-device-node.iso upstream/
 
 iso: quamotion-device-node.iso
 
