@@ -22,12 +22,21 @@ jobs:
   - script: |
       sudo make iso
       mkdir -p ${BUILD_ARTIFACTSTAGINGDIRECTORY}/iso/
+      mkdir -p ${BUILD_ARTIFACTSTAGINGDIRECTORY}/rootfs/
       cp quamotion-device-node.iso ${BUILD_ARTIFACTSTAGINGDIRECTORY}/iso/
+      cp upstream/casper/installer.squashfs ${BUILD_ARTIFACTSTAGINGDIRECTORY}/rootfs/
     displayName: Create the iso image
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/iso'
       artifactName: 'iso'
+      publishLocation: 'Container'
+    displayName: Publish
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/rootfs'
+      artifactName: 'rootfs'
       publishLocation: 'Container'
     displayName: Publish
