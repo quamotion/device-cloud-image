@@ -50,6 +50,10 @@ quamotion-device-node.iso: squashfs-root/etc/docker/daemon.json
 	sudo systemd-nspawn -D squashfs-root/ /root/scripts/cleanup.sh
 	sudo rm -rf squashfs-root/root/scripts/
 
+	# Remove the resolv.conf file which was injected earlier
+	sudo rm squashfs-root/etc/resolv.conf
+	sudo mv squashfs-root/etc/resolv.conf.old squashfs-root/etc/resolv.conf
+
 	# Update the (root) filesystem
 	sudo touch upstream/casper/filesystem.manifest
 	sudo chmod +w upstream/casper/filesystem.manifest
