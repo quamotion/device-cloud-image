@@ -21,28 +21,57 @@ To set up the device cloud:
 4. Apply the quamotion_device_cloud Ansible role
 5. Deploy the quamotion-device-farm and quamotion-device-daemons Helm charts.
 
-### Temporary workarounds
-
-1. Edit `/etc/resolv.conf` and update the nameserver
-2. Run `sudo swapoff -a`
-
 ### Applying the quamotion_device_cloud Ansible role
+
+First, add IP address `172.13.13.13` to the loopback adapter by configuring Netplan:
+
+```
+user@nuc:~$ cat /etc/netplan/loopback.yaml 
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    lo:
+      match:
+        name: lo
+      addresses: [ 172.13.13.13/32 ]
+```
+
+and apply the plan:
+
+```
+netplan apply
+```
+
+Then, configure a Kubernetes cluster:
 
 ```
 sudo su
 ansible-galaxy install quamotion.device_cloud_node
 
-ansible localhost -c local -m include_role -a name=quamotion.device_cloud_node -e "device_farm_role=master ansible_distribution=Ubuntu ansible_distribution_release=bionic"
+ansible localhost -c local -m include_role -a name=quamotion.device_cloud_node -e "device_farm_role=master ansible_distribution=Ubuntu ansible_distribution_release=bionic kubernetes_apiserver_advertise_address=172.13.13.13"
 ```
 
 ### Deploying the quamotion-device-daemons and quamotion-device-farm Helm charts
 
-Make sure to edit the `build-values.yaml` file, and then:
+Make sure to edit the `cloud.yaml` file
+
+```
+user@nuc:~$ cat cloud.yaml
+cloud:
+  project: <YOUR-PROJECT-ID>      
+  apiKey: <YOUR-API-KEY>
+```
+
+Then:
 
 ```
 sudo su
-helm install -f build-values.yml quamotion-device-daemons-0.95.76-gb56051bcfa.tgz
-helm install -f build-values.yaml quamotion-device-farm-0.95.76-gb56051bcfa.tgz
+
+helm repo add quamotion http://charts.quamotion.mobi/
+
+helm install http://charts.quamotion.mobi/quamotion-device-daemons-0.95.79-gdd1e7de7e8.tgz --name quamotion-device-daemons
+helm install -f cloud.yaml http://charts.quamotion.mobi/quamotion-device-farm-0.95.79-gdd1e7de7e8.tgz --name quamotion-device-farm
 ```
 
 ## Further Reading
