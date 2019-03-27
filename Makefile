@@ -1,12 +1,12 @@
 # This target simply downloads the iso file.
-ubuntu-18.04.1.0-live-server-amd64.iso:
-	curl -Lo ubuntu-18.04.1.0-live-server-amd64.iso http://releases.ubuntu.com/18.04.1.0/ubuntu-18.04.1.0-live-server-amd64.iso
+ubuntu-18.04.2-live-server-amd64.iso:
+	curl -Lo ubuntu-18.04.2-live-server-amd64.iso http://releases.ubuntu.com/18.04.2/ubuntu-18.04.2-live-server-amd64.iso
 
 # This target extracts the iso. We care mostly about the filesystem.squashfs file, so synchronize
 # on that one.
-upstream/casper/filesystem.squashfs: ubuntu-18.04.1.0-live-server-amd64.iso
-	xorriso -osirrox on -indev ubuntu-18.04.1.0-live-server-amd64.iso  -extract / upstream/
-	# Make sure the timestamp(filesystem.squashfs) > timestamp(ubuntu-18.04.1.0-live-server-adm64.iso).
+upstream/casper/filesystem.squashfs: ubuntu-18.04.2-live-server-amd64.iso
+	xorriso -osirrox on -indev ubuntu-18.04.2-live-server-amd64.iso  -extract / upstream/
+	# Make sure the timestamp(filesystem.squashfs) > timestamp(ubuntu-18.04.2-live-server-adm64.iso).
 	# By default this is not the case (the iso is created after the .squashfs file has been created), so
 	# use touch to update the timestamp.
 	touch upstream/casper/filesystem.squashfs
